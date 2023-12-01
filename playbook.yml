@@ -7,3 +7,35 @@
     compose_path: "./docker-compose.yml"
   roles:
     - geerlingguy.docker
+  tasks:
+    - name:
+      apt: update_cache=yes force_apt_get=yes cache_valid_time=360
+    - name:
+      package:
+        name:
+          - python3-pip
+        state: present
+    - name:
+      pip:
+        name:
+          - docker
+          - docker-compose
+        state: present
+    - name:
+      file:
+        path: {{ deployment_path }}
+        state: directory
+        mode: '0755'
+    - name:
+      copy:
+        src: {{ compose_path }}
+        dst: {{ deployment_path }}
+    - name: Run `docker-compose up`
+      become: true
+      docker_compose:
+        project_src: "{{ deployment_path }}"
+        build: yes
+        debug: yes
+      environment:
+        FRONTEND_IMAGE: "{{ lookup('env','FRONTEND_IMAGE') }}"
+        BACKEND_IMAGE:  "{{ lookup('env','BACKEND_IMAGE') }}"
