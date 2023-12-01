@@ -14,7 +14,7 @@ pipeline {
         string(defaultValue: 'default', name: 'frontendDockerTag')
     }
     stages {
-        stage('Get Code') {
+        stage('Get code') {
             steps {
                 //echo 'Hello World'
                 checkout scm
@@ -28,6 +28,12 @@ pipeline {
                     
                     currentBuild.description = "Backend: ${backendDockerTag}, Frontend: ${frontendDockerTag}"
                 }
+            }
+        }
+        stage('Remove containers') {
+            steps {
+                sh "docker rm -f frontend"
+                sh "docker rm -f backend"
             }
         }
     }
