@@ -13,8 +13,8 @@ pipeline {
         PIP_BREAK_SYSTEM_PACKAGES=1
     }
     parameters {
-        string(defaultValue: 'default', name: 'backendDockerTag')
-        string(defaultValue: 'default', name: 'frontendDockerTag')
+        string(defaultValue: '', name: 'backendDockerTag')
+        string(defaultValue: '', name: 'frontendDockerTag')
     }
     stages {
         stage('Get code') {
