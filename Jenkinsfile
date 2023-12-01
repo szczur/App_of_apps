@@ -9,6 +9,9 @@ pipeline {
     agent {
         label 'agent'
     }
+    environment {
+        PIP_BREAK_SYSTEM_PACKAGES=1
+    }
     parameters {
         string(defaultValue: 'default', name: 'backendDockerTag')
         string(defaultValue: 'default', name: 'frontendDockerTag')
@@ -46,6 +49,12 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        stage('Selenium test') {
+            steps {
+                sh "pip3 install -r requirements.txt"
+                sh "python -m pytest test/selenium/frontendTest.py"
             }
         }
     }
