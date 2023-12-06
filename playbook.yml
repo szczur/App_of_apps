@@ -23,13 +23,13 @@
         state: present
     - name:
       file:
-        path: {{ deployment_path }}
+        path: "{{ deployment_path }}"
         state: directory
         mode: '0755'
     - name:
       copy:
-        src: {{ compose_path }}
-        dst: {{ deployment_path }}
+        src: "{{ compose_path }}"
+        dst: "{{ deployment_path }}"
     - name: Run `docker-compose up`
       become: true
       docker_compose:
