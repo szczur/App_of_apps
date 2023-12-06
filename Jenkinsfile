@@ -12,6 +12,9 @@ pipeline {
     environment {
         PIP_BREAK_SYSTEM_PACKAGES=1
     }
+    tools {
+        terraform 'Terraform'
+    }
     parameters {
         string(defaultValue: '', name: 'backendDockerTag')
         string(defaultValue: '', name: 'frontendDockerTag')
@@ -55,6 +58,17 @@ pipeline {
             steps {
                 sh "pip3 install -r test/selenium/requirements.txt"
                 sh "python3 -m pytest test/selenium/frontendTest.py"
+            }
+        }
+        stage('Run terraform') {
+            steps {
+                dir('Terraform') {
+                    git branch: 'main', url: 'https://github.com/szczur/Terraform.git'
+                    withAWS(credentials:'AWS', region: 'us-east-1') {
+                        sh 'terraform init -backend-config=bucket=pawel-szczurek-panda-devops-core-15'
+                        sh 'terraform apply -auto-approve -var bucket_name=pawel-szczurek-panda-devops-core-15'
+                    } 
+                }
             }
         }
     }
